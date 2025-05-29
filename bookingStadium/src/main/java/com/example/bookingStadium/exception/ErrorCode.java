@@ -25,6 +25,9 @@ public enum ErrorCode {
     BILL_NOT_EXISTED(1020,"Bill not exists"),
     FORBIDDEN(1021,"FORBIDDEN"),
     IMAGE_NOT_FOUND(1022,"Image not found"),
+    BOOKING_NOT_COMPLETED(1010, "Booking must be completed to evaluate"),
+    BOOKING_ALREADY_EVALUATED(1011, "This booking has already been evaluated"),
+    EVALUATION_WINDOW_EXPIRED(1012, "Evaluation window has expired (30 days after completion)"),
             ;
     private int code;
     private String message;

@@ -24,6 +24,9 @@ public class Evaluation {
     @Column(name = "stadium_id")
     private String stadiumId;
 
+    @Column(name = "booking_id")
+    private String bookingId;
+
     @Column(name = "rating_score", precision = 2, scale = 1, nullable = false)
     private BigDecimal ratingScore;
 

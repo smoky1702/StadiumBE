@@ -135,7 +135,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         // Cấu hình CORS
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://stadium-fe.vercel.app"));
+        configuration.setAllowedOrigins(Arrays.asList("https://stadium-fe.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
