@@ -134,5 +134,28 @@ public class StadiumService {
         
         return stadiums;
     }
+    
+    /**
+     * Tìm tất cả stadium theo location_id và kiểm tra quyền truy cập
+     * Chỉ owner của location mới có quyền xem danh sách stadium của location đó
+     * 
+     * @param locationId ID của location cần tìm stadiums
+     * @return Danh sách các stadium thuộc location
+     */
+    @PreAuthorize("hasAuthority('SCOPE_OWNER')")
+    public List<Stadium> findStadiumsByLocationId(String locationId) {
+        // Kiểm tra location có tồn tại không
+        Stadium_Location location = stadiumLocationRepository.findById(locationId)
+                .orElseThrow(() -> new AppException(ErrorCode.STADIUM_LOCATION_NOT_EXISTED));
+        
+        // Kiểm tra quyền: chỉ chủ sở hữu địa điểm hoặc admin mới có thể xem
+        if (!securityUtils.isAdmin() && 
+                !securityUtils.isCurrentUser(location.getUserId())) {
+            throw new AppException(ErrorCode.FORBIDDEN);
+        }
+        
+        // Lấy danh sách stadium thuộc location này
+        return stadiumRepository.findByLocationId(locationId);
+    }
 }
 

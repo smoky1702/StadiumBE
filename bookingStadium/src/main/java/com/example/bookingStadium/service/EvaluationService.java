@@ -5,8 +5,10 @@ import com.example.bookingStadium.Security.SecurityUtils;
 import com.example.bookingStadium.dto.request.Evaluation.EvaluationCreationRequest;
 import com.example.bookingStadium.dto.request.Evaluation.EvaluationUpdateRequest;
 import com.example.bookingStadium.dto.response.EvaluationResponse;
+import com.example.bookingStadium.dto.response.EvaluationWithUserResponse;
 import com.example.bookingStadium.entity.Evaluation;
 import com.example.bookingStadium.entity.Booking;
+import com.example.bookingStadium.entity.Users;
 import com.example.bookingStadium.exception.AppException;
 import com.example.bookingStadium.exception.ErrorCode;
 import com.example.bookingStadium.mapper.EvaluationMapper;
@@ -164,6 +166,47 @@ public class EvaluationService {
         Evaluation evaluation = evaluationRepository.findByBookingId(bookingId)
             .orElseThrow(() -> new AppException(ErrorCode.EVALUATION_NOT_EXISTED));
         return evaluationMapper.toEvaluationResponse(evaluation);
+    }
+    
+    /**
+     * Lấy danh sách đánh giá theo stadium_id kèm theo tên người đánh giá
+     * 
+     * @param stadiumId ID của sân cần lấy đánh giá
+     * @return Danh sách đánh giá của sân kèm thông tin người đánh giá
+     */
+    public List<EvaluationWithUserResponse> getEvaluationsByStadiumId(String stadiumId) {
+        // Kiểm tra stadium tồn tại
+        if (!stadiumRepository.existsById(stadiumId)) {
+            throw new AppException(ErrorCode.STADIUM_NOT_EXISTED);
+        }
+        
+        // Lấy danh sách đánh giá
+        List<Evaluation> evaluations = evaluationRepository.findByStadiumId(stadiumId);
+        
+        // Chuyển đổi sang response kèm thông tin người dùng
+        return evaluations.stream()
+                .map(evaluation -> {
+                    EvaluationWithUserResponse response = new EvaluationWithUserResponse();
+                    response.setEvaluationId(evaluation.getEvaluation_id());
+                    response.setUserId(evaluation.getUserId());
+                    response.setStadiumId(evaluation.getStadiumId());
+                    response.setBookingId(evaluation.getBookingId());
+                    response.setRatingScore(evaluation.getRatingScore());
+                    response.setComment(evaluation.getComment());
+                    response.setDateCreated(evaluation.getDateCreated());
+                    
+                    // Lấy thông tin người dùng
+                    Users user = userRepository.findById(evaluation.getUserId()).orElse(null);
+                    if (user != null) {
+                        String userName = (user.getFirstname() != null ? user.getFirstname() : "") + 
+                                      " " + 
+                                      (user.getLastname() != null ? user.getLastname() : "");
+                        response.setUserName(userName.trim());
+                    }
+                    
+                    return response;
+                })
+                .toList();
     }
 }
 

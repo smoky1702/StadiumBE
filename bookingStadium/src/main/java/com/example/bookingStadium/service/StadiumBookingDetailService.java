@@ -34,10 +34,11 @@ public class StadiumBookingDetailService {
     private StadiumBookingDetailMapper stadiumBookingDetailMapper;
 
     @Autowired
-    private BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;    @Autowired
+    private StadiumRepository stadiumRepository;
 
     @Autowired
-    private StadiumRepository stadiumRepository;
+    private PricingService pricingService;
 
 
     public StadiumBookingDetail createStadiumBookingDetail(StadiumBookingDetailCreationRequest request) {
@@ -45,16 +46,14 @@ public class StadiumBookingDetailService {
         Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_EXISTED));
 
-        double totalHours = calculateTotalHours(booking.getStartTime(), booking.getEndTime());
-
-        Stadium stadium = stadiumRepository.findById(request.getStadiumId())
-                .orElseThrow(() -> new AppException(ErrorCode.STADIUM_NOT_EXISTED));
-
-        // Lấy giá tiền sân từ stadiumId
-        double stadiumPrice = stadium.getPrice();
-
-        // Tính tổng tiền thuê sân
-        double totalPrice = calculateTotalPrice(stadiumPrice, totalHours);
+        double totalHours = calculateTotalHours(booking.getStartTime(), booking.getEndTime());        Stadium stadium = stadiumRepository.findById(request.getStadiumId())
+                .orElseThrow(() -> new AppException(ErrorCode.STADIUM_NOT_EXISTED));        // Use dynamic pricing based on booking time
+        double totalPrice = pricingService.calculateDynamicPrice(
+                request.getStadiumId(), 
+                booking.getStartTime().toLocalTime(), 
+                booking.getEndTime().toLocalTime(), 
+                totalHours
+        );
 
         StadiumBookingDetail stadiumBookingDetail = stadiumBookingDetailMapper.toStadiumBookingDetails(request);
         stadiumBookingDetail.setBookingId(request.getBookingId());
@@ -85,12 +84,16 @@ public class StadiumBookingDetailService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_EXISTED));
 
-        double totalHours = calculateTotalHours(booking.getStartTime(), booking.getEndTime());
-
-        Stadium stadium = stadiumRepository.findById(request.getStadiumId())
+        double totalHours = calculateTotalHours(booking.getStartTime(), booking.getEndTime());        Stadium stadium = stadiumRepository.findById(request.getStadiumId())
                 .orElseThrow(() -> new AppException(ErrorCode.STADIUM_NOT_EXISTED));
 
-        double totalPrice = calculateTotalPrice(totalHours, stadium.getPrice());
+        // Use dynamic pricing based on booking time for updates too
+        double totalPrice = pricingService.calculateDynamicPrice(
+                request.getStadiumId(), 
+                booking.getStartTime().toLocalTime(), 
+                booking.getEndTime().toLocalTime(), 
+                totalHours
+        );
 
         stadiumBookingDetailMapper.updateStadiumBookingDetail(stadiumBookingDetail, request);
         stadiumBookingDetail.setTotalHours(totalHours);

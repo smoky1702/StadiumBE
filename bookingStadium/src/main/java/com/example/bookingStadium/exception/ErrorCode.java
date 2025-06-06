@@ -11,6 +11,7 @@ public enum ErrorCode {
     TYPE_OF_STADIUM_NOT_EXISTED(1007, "Type of stadium not existed"),
     STADIUM_LOCATION_EXISTED(1008, "Stadium location existed"),
     STADIUM_LOCATION_NOT_EXISTED(1009, "Stadium location not existed"),
+    LOCATION_NOT_EXISTED(1023, "Location not existed"),
     EMAIL_NOT_EXISTED(1010, "User not existed"),
     ROLE_NOT_EXISTED(1011, "Role not existed"),
     UNAUTHENTICATED(1012, "Unauthenticated"),
@@ -26,8 +27,14 @@ public enum ErrorCode {
     FORBIDDEN(1021,"FORBIDDEN"),
     IMAGE_NOT_FOUND(1022,"Image not found"),
     BOOKING_NOT_COMPLETED(1010, "Booking must be completed to evaluate"),
-    BOOKING_ALREADY_EVALUATED(1011, "This booking has already been evaluated"),
-    EVALUATION_WINDOW_EXPIRED(1012, "Evaluation window has expired (30 days after completion)"),
+    BOOKING_ALREADY_EVALUATED(1011, "This booking has already been evaluated"),    EVALUATION_WINDOW_EXPIRED(1012, "Evaluation window has expired (30 days after completion)"),
+    STADIUM_ID_REQUIRED(1024, "Stadium ID is required"),
+    MULTIPLIER_INVALID_MIN(1025, "Multiplier must be at least 0.1"),
+    MULTIPLIER_INVALID_MAX(1026, "Multiplier cannot exceed 10.0"),
+    START_TIME_REQUIRED(1027, "Start time is required"),
+    END_TIME_REQUIRED(1028, "End time is required"),
+    HOURLY_PRICING_SIZE_INVALID(1029, "Must provide pricing for at least 1 hour, maximum 24 hours"),
+    HOURLY_PRICE_NEGATIVE(1030, "Price cannot be negative"),
             ;
     private int code;
     private String message;

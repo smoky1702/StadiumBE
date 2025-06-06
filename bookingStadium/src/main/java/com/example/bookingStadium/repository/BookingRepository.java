@@ -15,6 +15,22 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
     List<Booking> findByDateOfBookingAndLocationId(LocalDate dateOfBooking, String locationId);
     List<Booking> findByUserId(String userId);
     
+    /**
+     * Tìm tất cả booking theo stadium ID
+     * @param stadiumId ID của sân
+     * @return Danh sách booking
+     */
+    @Query("SELECT b FROM Booking b JOIN StadiumBookingDetail sbd ON b.bookingId = sbd.bookingId WHERE sbd.stadiumId = :stadiumId")
+    List<Booking> findByStadiumId(@Param("stadiumId") String stadiumId);
+    
+    /**
+     * Tìm tất cả booking theo danh sách stadium ID
+     * @param stadiumIds Danh sách ID của sân
+     * @return Danh sách booking
+     */
+    @Query("SELECT b FROM Booking b JOIN StadiumBookingDetail sbd ON b.bookingId = sbd.bookingId WHERE sbd.stadiumId IN :stadiumIds")
+    List<Booking> findByStadiumIdIn(@Param("stadiumIds") List<String> stadiumIds);
+    
     // Tìm các booking đã xác nhận đã qua thời gian sử dụng để chuyển sang COMPLETED
     @Query("SELECT b FROM Booking b WHERE b.status = :status AND " +
            "((b.dateOfBooking < :currentDate) OR " +

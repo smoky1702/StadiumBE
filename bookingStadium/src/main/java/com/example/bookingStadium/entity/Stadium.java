@@ -33,10 +33,8 @@ public class Stadium {
     private String stadiumName;
 
     @Column(name = "price")
-    private double price;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "ENUM('INACTIVE', 'AVAILABLE')")
+    private double price;    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "ENUM('INACTIVE', 'AVAILABLE', 'MAINTENANCE')")
     private StadiumStatus status = StadiumStatus.INACTIVE;
 
     @Column(name = "date_created")
@@ -44,5 +42,38 @@ public class Stadium {
 
     @Column(name = "description")
     private String description;
+
+    // Getter methods (since Lombok is not working properly)
+    public String getStadiumId() {
+        return stadiumId;
+    }
+    
+    public String getStadiumName() {
+        return stadiumName;
+    }
+    
+    public double getPrice() {
+        return price;
+    }
+    
+    public String getLocationId() {
+        return locationId;
+    }
+    
+    public int getTypeId() {
+        return typeId;
+    }
+    
+    public StadiumStatus getStatus() {
+        return status;
+    }
+    
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
 
 }

@@ -1,18 +1,28 @@
 package com.example.bookingStadium.controller;
 
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.bookingStadium.Security.SecurityUtils;
 import com.example.bookingStadium.dto.request.Evaluation.EvaluationCreationRequest;
 import com.example.bookingStadium.dto.request.Evaluation.EvaluationUpdateRequest;
 import com.example.bookingStadium.dto.response.ApiResponse;
 import com.example.bookingStadium.dto.response.EvaluationResponse;
+import com.example.bookingStadium.dto.response.EvaluationWithUserResponse;
 import com.example.bookingStadium.entity.Evaluation;
 import com.example.bookingStadium.service.EvaluationService;
-import com.example.bookingStadium.Security.SecurityUtils;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/evaluation")
@@ -81,6 +91,13 @@ public class EvaluationController {
         ApiResponse<EvaluationResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(evaluationService.getEvaluationByBooking(bookingId));
         return apiResponse;
+    }
+    
+
+    @GetMapping("/stadium/{stadiumId}")
+    public ApiResponse<List<EvaluationWithUserResponse>> getEvaluationsByStadium(@PathVariable("stadiumId") String stadiumId) {
+        List<EvaluationWithUserResponse> evaluations = evaluationService.getEvaluationsByStadiumId(stadiumId);
+        return new ApiResponse<>(evaluations);
     }
 }
 
